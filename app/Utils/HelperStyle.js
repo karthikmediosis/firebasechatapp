@@ -52,6 +52,9 @@ const baseStyle = {
   displayFlex: {
     display: "flex",
   },
+  flex1: {
+    flex: 1,
+  },
   //alignments
   alignSelfFS: {
     alignSelf: "flex-start",

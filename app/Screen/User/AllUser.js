@@ -1,6 +1,12 @@
-import { Container } from "native-base";
+import { Container, View } from "native-base";
 import React, { useEffect, useState } from "react";
-import { FlatList, StatusBar, StyleSheet } from "react-native";
+import {
+  FlatList,
+  Image,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { ListItem, Avatar } from "react-native-elements";
 import SearchBar from "react-native-elements/dist/searchbar/SearchBar-ios";
 import { COLORS } from "../../Component/Constant/Color";
@@ -9,6 +15,9 @@ import database from "@react-native-firebase/database";
 import { useSelector } from "react-redux";
 import Navigation from "../../Service/Navigation";
 import uuid from "react-native-uuid";
+import HomeHeader from "../../Component/Header/HomeHeader";
+import { Text } from "react-native";
+import { baseStyle } from "../../Utils/HelperStyle";
 
 const listData = [
   {
@@ -146,48 +155,37 @@ const AllUser = () => {
   };
 
   const renderItem = ({ item }) => (
-    <ListItem
+    <TouchableOpacity
+      style={[baseStyle.borderBottom1px]}
       onPress={() => createChatList(item)}
-      bottomDivider
-      containerStyle={styles.listStyle}
     >
-      <Avatar
-        source={{ uri: item.img }}
-        rounded
-        title={item.name}
-        size="medium"
-      />
-      <ListItem.Content>
-        <ListItem.Title style={{ fontFamily: FONTS.Medium, fontSize: 14 }}>
-          {item.name}
-        </ListItem.Title>
-        <ListItem.Subtitle
-          style={{ fontFamily: FONTS.Regular, fontSize: 12 }}
-          numberOfLines={1}
-        >
-          {item.about}
-        </ListItem.Subtitle>
-      </ListItem.Content>
-    </ListItem>
+      <View style={[styles.allUsersContainer]}>
+        <View style={styles.userImgRound}>
+          <Image
+            source={{ uri: item.img }}
+            resizeMode="cover"
+            style={styles.imageContainer}
+          />
+        </View>
+        <View>
+          <Text> {item.name}</Text>
+          <Text> {item.about}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 
   return (
-    <Container style={{ flex: 1, backgroundColor: COLORS.white }}>
+    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
-      {/* <SearchBar
-        placeholder="Search by name..."
-        onChangeText={val => searchuser(val)}
-        value={search}
-        containerStyle={styles.searchContainer}
-        inputStyle={styles.searchInput}
-      /> */}
+      <HomeHeader />
       <FlatList
         showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
         data={allUser}
         renderItem={renderItem}
       />
-    </Container>
+    </View>
   );
 };
 
@@ -205,5 +203,24 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     opacity: 0.7,
   },
+
   listStyle: { paddingVertical: 7, marginVertical: 2 },
+
+  //allUsersContainer
+  allUsersContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 5,
+  },
+
+  userImgRound: {
+    height: 30,
+    width: 30,
+    borderRadius: 30,
+  },
+  imageContainer: {
+    width: "100%",
+    height: "100%",
+  },
 });

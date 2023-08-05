@@ -35,11 +35,13 @@ const Home = () => {
     database()
       .ref("/chatlist/" + userData?.id)
       .on("value", (snapshot) => {
-        // console.warn("User data: ", Object.values(snapshot.val()));
         if (snapshot.val() != null) {
-          setchatList(Object.values(snapshot.val()));
+          const dataArray = Object.values(snapshot.val());
+          dataArray.sort((a, b) => new Date(b.sendTime) - new Date(a.sendTime));
+          setchatList(dataArray);
           setLoader(false);
         }
+        setLoader(false);
       });
   };
 
@@ -91,8 +93,12 @@ const Home = () => {
     return (
       <Text
         style={[
-          baseStyle.txtStylePoppinsSemiBold(10, COLORS.black, 14),
+          baseStyle.txtStylePoppinsSemiBold(12, COLORS.black, 14),
           baseStyle.textAlignCenter,
+          baseStyle.padding10px,
+          baseStyle.justifyContentCenter,
+          baseStyle.alignItemsCenter,
+          baseStyle.displayFlex,
         ]}
       >
         {commonStrings.noRecordFound}
@@ -112,7 +118,7 @@ const Home = () => {
         renderItem={renderItem}
         ListEmptyComponent={EmptyListMessage}
       />
-      <TouchableOpacity style={styles.but} onPress={handleAllUser}>
+      <TouchableOpacity style={styles.usersBtn} onPress={handleAllUser}>
         <Feather name="users" size={20} color={COLORS.white} />
       </TouchableOpacity>
     </View>
@@ -129,10 +135,11 @@ const styles = StyleSheet.create({
   cardContainer: {
     padding: 10,
     backgroundColor: COLORS.white,
-    margin: 10,
+    marginHorizontal: 10,
+    marginVertical: 5,
     borderRadius: 5,
   },
-  but: {
+  usersBtn: {
     position: "absolute",
     bottom: 15,
     right: 15,

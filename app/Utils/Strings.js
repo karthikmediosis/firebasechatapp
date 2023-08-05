@@ -1,6 +1,6 @@
 export const commonStrings = {
   firebaseTitle: "FireBase Chat App",
-  noRecordFound: "No Data Found",
+  noRecordFound: "No Chats Available",
   name: "Name",
   lsgMsg: "Last Msg",
 };
