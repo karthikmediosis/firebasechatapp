@@ -63,10 +63,21 @@ const Home = () => {
       onPress={() => handleSingleChat(item)}
       style={[baseStyle.shadowBlack, styles.cardContainer]}
     >
-      <Text>Name : {item.name}</Text>
+      <Text
+        style={[
+          baseStyle.txtStylePoppinsSemiBold(15, COLORS.black, 18),
+          baseStyle.marginBottom3px,
+        ]}
+      >
+        {commonStrings.name} : {item.name}
+      </Text>
       <View style={[baseStyle.flexDirectionRow, baseStyle.justifyContentSB]}>
-        <Text>Last Msg :{item.lastMsg}</Text>
-        <Text>{changeTimeFormat(item.sendTime)}</Text>
+        <Text style={[baseStyle.txtStylePoppinsRegular(15, COLORS.black, 14)]}>
+          {commonStrings.lsgMsg} :{item.lastMsg}
+        </Text>
+        <Text style={[baseStyle.txtStylePoppinsBold(15, COLORS.green, 20)]}>
+          {changeTimeFormat(item.sendTime)}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -74,7 +85,9 @@ const Home = () => {
   //EmptyListMessage
   const EmptyListMessage = () => {
     return (
-      <Text style={styles.emptyListStyle}>{commonStrings.noRecordFound}</Text>
+      <Text style={[baseStyle.txtStylePoppinsSemiBold(10, COLORS.black, 14)]}>
+        {commonStrings.noRecordFound}
+      </Text>
     );
   };
 
