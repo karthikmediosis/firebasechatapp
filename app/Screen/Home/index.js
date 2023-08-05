@@ -1,4 +1,4 @@
-import { Container, Icon } from "native-base";
+import { Container } from "native-base";
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
@@ -13,6 +13,7 @@ import { FONTS } from "../../Component/Constant/Font";
 import HomeHeader from "../../Component/Header/HomeHeader";
 import Navigation from "../../Service/Navigation";
 import database from "@react-native-firebase/database";
+import Feather from "react-native-vector-icons/Feather";
 
 const listData = [
   {
@@ -141,11 +142,12 @@ const Home = (props) => {
         style={styles.but}
         onPress={() => Navigation.navigate("AllUser")}
       >
-        <Icon
+        <Feather name="edit" size={20} color="black" />
+        {/* <Icon
           name="users"
           type="FontAwesome5"
           style={{ color: COLORS.white, fontSize: 20 }}
-        />
+        /> */}
       </TouchableOpacity>
     </Container>
   );
