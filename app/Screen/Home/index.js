@@ -16,11 +16,13 @@ import Feather from "react-native-vector-icons/Feather";
 import { baseStyle } from "../../Utils/HelperStyle";
 import moment from "moment-timezone";
 import { commonStrings } from "../../Utils/Strings";
+import Loader from "../../Component/Loader";
 
 const Home = () => {
   const { userData } = useSelector((state) => state.User);
 
   const [chatList, setchatList] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   // getChatlist
   useEffect(() => {
@@ -29,12 +31,14 @@ const Home = () => {
 
   //getchatList
   const getChatlist = async () => {
+    setLoader(true);
     database()
       .ref("/chatlist/" + userData?.id)
       .on("value", (snapshot) => {
         // console.warn("User data: ", Object.values(snapshot.val()));
         if (snapshot.val() != null) {
           setchatList(Object.values(snapshot.val()));
+          setLoader(false);
         }
       });
   };
@@ -85,7 +89,12 @@ const Home = () => {
   //EmptyListMessage
   const EmptyListMessage = () => {
     return (
-      <Text style={[baseStyle.txtStylePoppinsSemiBold(10, COLORS.black, 14)]}>
+      <Text
+        style={[
+          baseStyle.txtStylePoppinsSemiBold(10, COLORS.black, 14),
+          baseStyle.textAlignCenter,
+        ]}
+      >
         {commonStrings.noRecordFound}
       </Text>
     );
@@ -93,6 +102,7 @@ const Home = () => {
 
   return (
     <View style={styles.mainContainer}>
+      <Loader visible={loader} />
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.green} />
       <HomeHeader />
       <FlatList
