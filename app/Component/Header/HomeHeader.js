@@ -1,7 +1,6 @@
 import { Icon } from "native-base";
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Avatar } from "react-native-elements/dist/avatar/Avatar";
 import { useDispatch, useSelector } from "react-redux";
 import { COLORS } from "../Constant/Color";
 import { FONTS } from "../Constant/Font";
@@ -10,6 +9,8 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import Auth from "../../Service/Auth";
 import { removeUser } from "../../Redux/reducer/user";
 import Navigation from "../../Service/Navigation";
+import { commonStrings } from "../../Utils/Strings";
+import { baseStyle } from "../../Utils/HelperStyle";
 
 const HomeHeader = () => {
   const { userData } = useSelector((state) => state.User);
@@ -22,34 +23,35 @@ const HomeHeader = () => {
     Navigation.navigate("Login");
   };
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: 10,
-        paddingHorizontal: 15,
-        backgroundColor: COLORS.white,
-        elevation: 2,
-        paddingVertical: 15,
-      }}
-    >
-      <Text style={styles.logo}>FireBase Chat App</Text>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <TouchableOpacity style={styles.but} onPress={handleToLogout}>
-          <AntDesign name="logout" size={20} color={COLORS.green} />
+    <View style={styles.mainHomeHeader}>
+      <Text style={styles.logo}>{commonStrings.firebaseTitle}</Text>
+      <View style={[baseStyle.flexDirectionRow, baseStyle.alignItemsCenter]}>
+        <TouchableOpacity onPress={handleToLogout}>
+          <AntDesign name="logout" size={20} color={COLORS.white} />
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
+// { flexDirection: "row", alignItems: "center" }
+
 export default HomeHeader;
 
 const styles = StyleSheet.create({
+  mainHomeHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+    paddingHorizontal: 15,
+    backgroundColor: COLORS.green,
+    elevation: 2,
+    paddingVertical: 15,
+  },
   logo: {
     fontFamily: FONTS.Bold,
-    color: COLORS.theme,
+    color: COLORS.white,
     fontSize: 22,
   },
 });

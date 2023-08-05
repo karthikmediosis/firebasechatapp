@@ -92,7 +92,7 @@ const AllUser = () => {
       .ref("users/")
       .once("value")
       .then((snapshot) => {
-        console.log("all User data: ", Object.values(snapshot.val()));
+        console.error("all User data: ", Object.values(snapshot.val()));
         setallUser(
           Object.values(snapshot.val()).filter((it) => it.id != userData.id)
         );

@@ -1,90 +1,114 @@
-import { Container } from "native-base";
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
+  View,
+  Text,
 } from "react-native";
-import { ListItem, Avatar } from "react-native-elements";
 import { useSelector } from "react-redux";
 import { COLORS } from "../../Component/Constant/Color";
-import { FONTS } from "../../Component/Constant/Font";
 import HomeHeader from "../../Component/Header/HomeHeader";
 import Navigation from "../../Service/Navigation";
 import database from "@react-native-firebase/database";
 import Feather from "react-native-vector-icons/Feather";
+import { baseStyle } from "../../Utils/HelperStyle";
+import moment from "moment-timezone";
+import { commonStrings } from "../../Utils/Strings";
 
 const Home = () => {
   const { userData } = useSelector((state) => state.User);
 
-  // console.log("userData",userData);
-
   const [chatList, setchatList] = useState([]);
 
+  // getChatlist
   useEffect(() => {
     getChatlist();
   }, []);
 
+  //getchatList
   const getChatlist = async () => {
     database()
       .ref("/chatlist/" + userData?.id)
       .on("value", (snapshot) => {
-        console.log("User data: ", snapshot.val());
+        // console.warn("User data: ", Object.values(snapshot.val()));
         if (snapshot.val() != null) {
           setchatList(Object.values(snapshot.val()));
         }
       });
   };
 
+  //changeTimeFormat
+  const changeTimeFormat = (val) => {
+    const dateTimeString = val;
+    const timeOnly = moment(dateTimeString)
+      .tz("Asia/Kolkata")
+      .format("hh:mm:ss A");
+    return timeOnly;
+  };
+
+  // handleSingleChat
+  const handleSingleChat = (list) => {
+    Navigation.navigate("SingleChat", { receiverData: list });
+  };
+  // handleAllUser
+  const handleAllUser = (list) => {
+    Navigation.navigate("AllUser");
+  };
+
+  // handleRenderItem
   const renderItem = ({ item }) => (
-    <ListItem
-      containerStyle={{ paddingVertical: 8, marginVertical: 0 }}
-      onPress={() => Navigation.navigate("SingleChat", { receiverData: item })}
+    <TouchableOpacity
+      onPress={() => handleSingleChat(item)}
+      style={[baseStyle.shadowBlack, styles.cardContainer]}
     >
-      <Avatar
-        source={{ uri: item.img }}
-        rounded
-        // title={item.name.charAt(0)}
-        size="medium"
-      />
-      <ListItem.Content>
-        <ListItem.Title style={{ fontFamily: FONTS.Medium, fontSize: 14 }}>
-          {item.name}
-        </ListItem.Title>
-        <ListItem.Subtitle
-          style={{ fontFamily: FONTS.Regular, fontSize: 12 }}
-          numberOfLines={1}
-        >
-          {item.lastMsg}
-        </ListItem.Subtitle>
-      </ListItem.Content>
-    </ListItem>
+      <Text>Name : {item.name}</Text>
+      <View style={[baseStyle.flexDirectionRow, baseStyle.justifyContentSB]}>
+        <Text>Last Msg :{item.lastMsg}</Text>
+        <Text>{changeTimeFormat(item.sendTime)}</Text>
+      </View>
+    </TouchableOpacity>
   );
 
+  //EmptyListMessage
+  const EmptyListMessage = () => {
+    return (
+      <Text style={styles.emptyListStyle}>{commonStrings.noRecordFound}</Text>
+    );
+  };
+
   return (
-    <Container style={{ flex: 1, backgroundColor: COLORS.white }}>
-      <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
+    <View style={styles.mainContainer}>
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.green} />
       <HomeHeader />
       <FlatList
         showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
         data={chatList}
         renderItem={renderItem}
+        ListEmptyComponent={EmptyListMessage}
       />
-      <TouchableOpacity
-        style={styles.but}
-        onPress={() => Navigation.navigate("AllUser")}
-      >
+      <TouchableOpacity style={styles.but} onPress={handleAllUser}>
         <Feather name="users" size={20} color={COLORS.white} />
       </TouchableOpacity>
-    </Container>
+    </View>
   );
 };
 
 export default Home;
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: "gray",
+  },
+  cardContainer: {
+    padding: 10,
+    backgroundColor: COLORS.white,
+    margin: 10,
+    borderRadius: 5,
+  },
   but: {
     position: "absolute",
     bottom: 15,
