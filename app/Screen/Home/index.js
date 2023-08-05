@@ -142,12 +142,7 @@ const Home = (props) => {
         style={styles.but}
         onPress={() => Navigation.navigate("AllUser")}
       >
-        <Feather name="edit" size={20} color="black" />
-        {/* <Icon
-          name="users"
-          type="FontAwesome5"
-          style={{ color: COLORS.white, fontSize: 20 }}
-        /> */}
+        <Feather name="users" size={20} color={COLORS.white} />
       </TouchableOpacity>
     </Container>
   );

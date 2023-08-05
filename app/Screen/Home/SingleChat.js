@@ -1,6 +1,5 @@
 //import liraries
-import {Icon} from 'native-base';
-import React, {Component, useEffect} from 'react';
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -10,44 +9,46 @@ import {
   SectionList,
   TouchableOpacity,
   FlatList,
-} from 'react-native';
-import moment from 'moment';
-import MsgComponent from '../../Component/Chat/MsgComponent';
-import {COLORS} from '../../Component/Constant/Color';
-import ChatHeader from '../../Component/Header/ChatHeader';
-import {useSelector} from 'react-redux';
-import database from '@react-native-firebase/database';
-import SimpleToast from 'react-native-simple-toast';
+} from "react-native";
+import moment from "moment";
+import MsgComponent from "../../Component/Chat/MsgComponent";
+import { COLORS } from "../../Component/Constant/Color";
+import ChatHeader from "../../Component/Header/ChatHeader";
+import { useSelector } from "react-redux";
+import database from "@react-native-firebase/database";
+import SimpleToast from "react-native-simple-toast";
+import Entypo from "react-native-vector-icons/Entypo";
 
+const SingleChat = (props) => {
+  const { userData } = useSelector((state) => state.User);
 
-const SingleChat = props => {
-  const {userData} = useSelector(state => state.User);
+  const { receiverData } = props.route.params;
 
-  const {receiverData} = props.route.params;
+  console.log("receiverData", receiverData);
 
-  console.log('receiverData', receiverData);
-
-  const [msg, setMsg] = React.useState('');
+  const [msg, setMsg] = React.useState("");
   const [disabled, setdisabled] = React.useState(false);
   const [allChat, setallChat] = React.useState([]);
 
-
   useEffect(() => {
     const onChildAdd = database()
-      .ref('/messages/'+ receiverData.roomId)
-      .on('child_added', snapshot => {
+      .ref("/messages/" + receiverData.roomId)
+      .on("child_added", (snapshot) => {
         // console.log('A new node has been added', snapshot.val());
-        setallChat((state) => [snapshot.val(),...state]);
+        setallChat((state) => [snapshot.val(), ...state]);
       });
     // Stop listening for updates when no longer required
-    return () => database().ref('/messages'+ receiverData.roomId).off('child_added', onChildAdd);
+    return () =>
+      database()
+        .ref("/messages" + receiverData.roomId)
+        .off("child_added", onChildAdd);
   }, [receiverData.roomId]);
 
-  const msgvalid = txt => txt && txt.replace(/\s/g, '').length;
+  const msgvalid = (txt) => txt && txt.replace(/\s/g, "").length;
 
   const sendMsg = () => {
-    if (msg == '' || msgvalid(msg) == 0) {
-      SimpleToast.show('Enter something....');
+    if (msg == "" || msgvalid(msg) == 0) {
+      SimpleToast.show("Enter something....");
       return false;
     }
     setdisabled(true);
@@ -56,12 +57,12 @@ const SingleChat = props => {
       message: msg,
       from: userData?.id,
       to: receiverData.id,
-      sendTime: moment().format(''),
-      msgType: 'text',
+      sendTime: moment().format(""),
+      msgType: "text",
     };
 
     const newReference = database()
-      .ref('/messages/' + receiverData.roomId)
+      .ref("/messages/" + receiverData.roomId)
       .push();
     msgData.id = newReference.key;
     newReference.set(msgData).then(() => {
@@ -70,39 +71,36 @@ const SingleChat = props => {
         sendTime: msgData.sendTime,
       };
       database()
-        .ref('/chatlist/' + receiverData?.id + '/' + userData?.id)
+        .ref("/chatlist/" + receiverData?.id + "/" + userData?.id)
         .update(chatListupdate)
-        .then(() => console.log('Data updated.'));
-      console.log("'/chatlist/' + userData?.id + '/' + data?.id",receiverData)
+        .then(() => console.log("Data updated."));
+      console.log("'/chatlist/' + userData?.id + '/' + data?.id", receiverData);
       database()
-        .ref('/chatlist/' + userData?.id + '/' + receiverData?.id)
+        .ref("/chatlist/" + userData?.id + "/" + receiverData?.id)
         .update(chatListupdate)
-        .then(() => console.log('Data updated.'));
+        .then(() => console.log("Data updated."));
 
-      setMsg('');
+      setMsg("");
       setdisabled(false);
     });
   };
-
 
   return (
     <View style={styles.container}>
       <ChatHeader data={receiverData} />
       <ImageBackground
-        source={require('../../Assets/Background.jpg')}
-        style={{flex: 1}}>
+        source={require("../../Assets/Background.jpg")}
+        style={{ flex: 1 }}
+      >
         <FlatList
-          style={{flex: 1}}
+          style={{ flex: 1 }}
           data={allChat}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => index}
           inverted
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             return (
-              <MsgComponent
-                sender={item.from == userData.id}
-                item={item}
-              />
+              <MsgComponent sender={item.from == userData.id} item={item} />
             );
           }}
         />
@@ -113,15 +111,16 @@ const SingleChat = props => {
           backgroundColor: COLORS.theme,
           elevation: 5,
           // height: 60,
-          flexDirection: 'row',
-          alignItems: 'center',
+          flexDirection: "row",
+          alignItems: "center",
           paddingVertical: 7,
-          justifyContent: 'space-evenly',
-        }}>
+          justifyContent: "space-evenly",
+        }}
+      >
         <TextInput
           style={{
             backgroundColor: COLORS.white,
-            width: '80%',
+            width: "80%",
             borderRadius: 25,
             borderWidth: 0.5,
             borderColor: COLORS.white,
@@ -132,17 +131,17 @@ const SingleChat = props => {
           placeholderTextColor={COLORS.black}
           multiline={true}
           value={msg}
-          onChangeText={val => setMsg(val)}
+          onChangeText={(val) => setMsg(val)}
         />
 
-        <TouchableOpacity disabled={disabled} onPress={sendMsg}>
-          <Icon
+        <TouchableOpacity onPress={sendMsg}>
+          <Entypo
             style={{
-              // marginHorizontal: 15,
               color: COLORS.white,
             }}
-            name="paper-plane-sharp"
-            type="Ionicons"
+            name="paper-plane"
+            size={30}
+            disabled={disabled}
           />
         </TouchableOpacity>
       </View>
