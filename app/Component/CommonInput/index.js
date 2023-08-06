@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./styles";
-import { baseStyle } from "../../Utils/HelperStyle";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { COLORS } from "../Constant/Color";
 import { TextInput, View } from "react-native";
