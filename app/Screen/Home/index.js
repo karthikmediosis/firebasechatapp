@@ -78,7 +78,7 @@ const Home = () => {
         {commonStrings.name} : {item.name}
       </Text>
       <View style={[baseStyle.flexDirectionRow, baseStyle.justifyContentSB]}>
-        <Text style={[baseStyle.txtStylePoppinsRegular(15, COLORS.black, 14)]}>
+        <Text style={[baseStyle.txtStylePoppinsRegular(15, COLORS.black, 20)]}>
           {commonStrings.lsgMsg} :{item.lastMsg}
         </Text>
         <Text style={[baseStyle.txtStylePoppinsBold(15, COLORS.green, 20)]}>

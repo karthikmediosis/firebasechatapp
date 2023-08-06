@@ -1,15 +1,6 @@
 //import liraries
-import { Icon } from "native-base";
-import React, { Component, useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  StatusBar,
-  Platform,
-} from "react-native";
-import moment from "moment";
+import React from "react";
+import { View, Text, StyleSheet, StatusBar } from "react-native";
 import { COLORS } from "../Constant/Color";
 import { FONTS } from "../Constant/Font";
 import { Avatar } from "react-native-elements/dist/avatar/Avatar";
@@ -19,9 +10,6 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 // create a component
 const ChatHeader = (props) => {
   const { data } = props;
-  // console.log("cht saa",data);
-
-  const [lastSeen, setlastSeen] = useState("");
 
   return (
     <View style={styles.container}>
@@ -30,45 +18,18 @@ const ChatHeader = (props) => {
         backgroundColor={COLORS.theme}
         translucent={false}
       />
-
       <Ionicons
         name="chevron-back"
         size={20}
-        style={{
-          marginHorizontal: 10,
-          color: COLORS.white,
-        }}
+        style={styles.backIcon}
         onPress={() => Navigation.back()}
       />
       <Avatar source={{ uri: data.img }} rounded size="small" />
-      <View style={{ flex: 1, marginLeft: 10 }}>
-        <Text
-          numberOfLines={1}
-          style={{
-            color: COLORS.white,
-            fontSize: 16,
-            fontFamily: FONTS.SemiBold,
-            textTransform: "capitalize",
-          }}
-        >
+      <View style={styles.textContainer}>
+        <Text numberOfLines={1} style={styles.chatText}>
           {data.name}
         </Text>
-
-        {/* <Text
-                    style={{ color: COLORS.primaryBackground, fontSize: 10,fontFamily: FONTS.Regular }}
-                >
-                    {lastSeen}
-                </Text> */}
       </View>
-
-      {/* <Icon
-                style={{
-                    marginHorizontal: 10,
-                    color: COLORS.themeColor
-                }}
-                name="videocam-outline"
-                type="Ionicons"
-            /> */}
     </View>
   );
 };
@@ -81,6 +42,20 @@ const styles = StyleSheet.create({
     elevation: 5,
     flexDirection: "row",
     alignItems: "center",
+  },
+  backIcon: {
+    marginHorizontal: 10,
+    color: COLORS.white,
+  },
+  textContainer: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  chatText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontFamily: FONTS.SemiBold,
+    textTransform: "capitalize",
   },
 });
 

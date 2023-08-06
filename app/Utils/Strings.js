@@ -8,4 +8,7 @@ export const commonStrings = {
   loginNow: "Login Now",
   newUser: "New user?",
   register: "Register Now",
+  registerTitle: "Register",
+  registercon: "  In order to Register your account please fill out all fields",
+  existing: "Existing user?",
 };

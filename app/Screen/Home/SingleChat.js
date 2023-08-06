@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import database from "@react-native-firebase/database";
 import SimpleToast from "react-native-simple-toast";
 import Entypo from "react-native-vector-icons/Entypo";
+import { baseStyle } from "../../Utils/HelperStyle";
 
 const SingleChat = (props) => {
   const { userData } = useSelector((state) => state.User);
@@ -90,10 +91,10 @@ const SingleChat = (props) => {
       <ChatHeader data={receiverData} />
       <ImageBackground
         source={require("../../Assets/Background.jpg")}
-        style={{ flex: 1 }}
+        style={baseStyle.flex1}
       >
         <FlatList
-          style={{ flex: 1 }}
+          style={baseStyle.flex1}
           data={allChat}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => index}
@@ -106,27 +107,9 @@ const SingleChat = (props) => {
         />
       </ImageBackground>
 
-      <View
-        style={{
-          backgroundColor: COLORS.theme,
-          elevation: 5,
-          // height: 60,
-          flexDirection: "row",
-          alignItems: "center",
-          paddingVertical: 7,
-          justifyContent: "space-evenly",
-        }}
-      >
+      <View style={styles.singleChatMsg}>
         <TextInput
-          style={{
-            backgroundColor: COLORS.white,
-            width: "80%",
-            borderRadius: 25,
-            borderWidth: 0.5,
-            borderColor: COLORS.white,
-            paddingHorizontal: 15,
-            color: COLORS.black,
-          }}
+          style={styles.singleChatInput}
           placeholder="type a message"
           placeholderTextColor={COLORS.black}
           multiline={true}
@@ -136,9 +119,7 @@ const SingleChat = (props) => {
 
         <TouchableOpacity onPress={sendMsg}>
           <Entypo
-            style={{
-              color: COLORS.white,
-            }}
+            style={styles.arrowIcon}
             name="paper-plane"
             size={30}
             disabled={disabled}
@@ -153,6 +134,27 @@ const SingleChat = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  singleChatMsg: {
+    backgroundColor: COLORS.theme,
+    elevation: 5,
+    // height: 60,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 7,
+    justifyContent: "space-evenly",
+  },
+  singleChatInput: {
+    backgroundColor: COLORS.white,
+    width: "80%",
+    borderRadius: 25,
+    borderWidth: 0.5,
+    borderColor: COLORS.white,
+    paddingHorizontal: 15,
+    color: COLORS.black,
+  },
+  arrowIcon: {
+    color: COLORS.white,
   },
 });
 

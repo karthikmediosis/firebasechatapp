@@ -20,6 +20,7 @@ import { setUser } from "../../Redux/reducer/user";
 import Auth from "../../Service/Auth";
 import { commonStrings } from "../../Utils/Strings";
 import { baseStyle } from "../../Utils/HelperStyle";
+import CommonInput from "../../Component/CommonInput";
 
 const { height } = Dimensions.get("window");
 
@@ -75,30 +76,15 @@ function Login() {
                 showsHorizontalScrollIndicator={false}
                 showsVerticalScrollIndicator={false}
               >
-                <View style={[styles.inputContainer, baseStyle.marginTop10px]}>
-                  <View style={styles.inputIconView}>
-                    <Icon
-                      name="gmail"
-                      type="MaterialCommunityIcons"
-                      style={{
-                        color: "#fff",
-                        fontSize: 18,
-                        textAlign: "center",
-                      }}
-                    />
-                  </View>
-                  <TextInput
-                    style={styles.inputs}
-                    placeholder="Enter Email Id"
-                    keyboardType="email-address"
-                    underlineColorAndroid="transparent"
-                    onChangeText={(value) => {
-                      setemail(value);
-                    }}
-                    value={email}
-                    placeholderTextColor={COLORS.liteBlack}
-                  />
-                </View>
+                <CommonInput
+                  placeholder="Enter Email Id"
+                  keyboardType="email-address"
+                  underlineColorAndroid="transparent"
+                  onChangeText={(value) => {
+                    setemail(value);
+                  }}
+                  value={email}
+                />
               </KeyboardAwareScrollView>
 
               <TouchableOpacity style={styles.loginBtn} onPress={loginUser}>
@@ -126,7 +112,10 @@ function Login() {
 export default Login;
 
 const styles = StyleSheet.create({
-  mainContainer: { flex: 1, backgroundColor: COLORS.white },
+  mainContainer: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+  },
   uppercard: {
     height: height / 4,
     backgroundColor: COLORS.theme,
@@ -147,12 +136,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
 
-  logo: {
-    height: height / 2 - 50,
-    width: "95%",
-    resizeMode: "cover",
-    borderRadius: 13,
-  },
   loginBtn: {
     height: 48,
     width: "95%",
@@ -167,42 +150,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: FONTS.Regular,
   },
-  buttonSec: { marginTop: 20, justifyContent: "center", alignItems: "center" },
-  logo: {
-    height: height / 2 - 50,
-    width: "95%",
-    resizeMode: "cover",
-    borderRadius: 13,
-  },
 
-  inputs: {
-    borderBottomColor: COLORS.white,
-    flex: 1,
-    color: COLORS.liteBlack,
-    paddingLeft: 10,
-    fontFamily: FONTS.Regular,
-  },
-  inputContainer: {
-    borderRadius: 30,
-    height: 48,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: COLORS.white,
-    marginBottom: 10,
-    elevation: 2,
-  },
-  inputIconView: {
-    width: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: COLORS.theme,
-    height: "100%",
-    borderRadius: 30,
-    alignSelf: "center",
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
-    elevation: 2,
-  },
   smallTxt: {
     fontSize: 13,
     color: COLORS.black,
@@ -231,15 +179,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 2,
   },
-  btn: {
-    backgroundColor: COLORS.theme,
-    width: "100%",
-    height: 50,
-    borderRadius: 30,
-    elevation: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+
   Login: {
     alignSelf: "center",
     fontFamily: FONTS.Medium,
@@ -248,7 +188,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   cardView: {
-    backgroundColor: "#fff",
+    backgroundColor: COLORS.white,
     borderRadius: 15,
     paddingBottom: 20,
     paddingTop: 20,
