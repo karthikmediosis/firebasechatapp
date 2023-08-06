@@ -25,8 +25,6 @@ const SingleChat = (props) => {
 
   const { receiverData } = props.route.params;
 
-  console.log("receiverData", receiverData);
-
   const [msg, setMsg] = React.useState("");
   const [disabled, setdisabled] = React.useState(false);
   const [allChat, setallChat] = React.useState([]);
@@ -35,7 +33,6 @@ const SingleChat = (props) => {
     const onChildAdd = database()
       .ref("/messages/" + receiverData.roomId)
       .on("child_added", (snapshot) => {
-        // console.log('A new node has been added', snapshot.val());
         setallChat((state) => [snapshot.val(), ...state]);
       });
     // Stop listening for updates when no longer required

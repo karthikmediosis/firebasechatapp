@@ -1,4 +1,3 @@
-import { Container, View } from "native-base";
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
@@ -6,9 +5,8 @@ import {
   StatusBar,
   StyleSheet,
   TouchableOpacity,
+  View,
 } from "react-native";
-import { ListItem, Avatar } from "react-native-elements";
-import SearchBar from "react-native-elements/dist/searchbar/SearchBar-ios";
 import { COLORS } from "../../Component/Constant/Color";
 import { FONTS } from "../../Component/Constant/Font";
 import database from "@react-native-firebase/database";
@@ -17,112 +15,79 @@ import Navigation from "../../Service/Navigation";
 import uuid from "react-native-uuid";
 import HomeHeader from "../../Component/Header/HomeHeader";
 import { Text } from "react-native";
-import { baseStyle } from "../../Utils/HelperStyle";
-
-const listData = [
-  {
-    name: "Amy Farha",
-    avatar_url:
-      "https://images.pexels.com/photos/2811087/pexels-photo-2811087.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    subtitle: "Hey there, how are you?",
-  },
-  {
-    name: "Chris Jackson",
-    avatar_url:
-      "https://images.pexels.com/photos/3748221/pexels-photo-3748221.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    subtitle: "Where are you?",
-  },
-  {
-    name: "Jenifar Lawrence",
-    avatar_url:
-      "https://m.media-amazon.com/images/M/MV5BOTU3NDE5MDQ4MV5BMl5BanBnXkFtZTgwMzE5ODQ3MDI@._V1_.jpg",
-    subtitle: "I am good, how are you?",
-  },
-  {
-    name: "Tom Holland",
-    avatar_url:
-      "https://static.toiimg.com/thumb.cms?msid=80482429&height=600&width=600",
-    subtitle:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
-  },
-  {
-    name: "Robert",
-    avatar_url:
-      "https://expertphotography.b-cdn.net/wp-content/uploads/2020/05/male-poses-squint.jpg",
-    subtitle: "Where does it come from?",
-  },
-  {
-    name: "downey junior",
-    avatar_url:
-      "https://www.apetogentleman.com/wp-content/uploads/2018/06/male-models-marlon.jpg",
-    subtitle: "Where can I get some?",
-  },
-  {
-    name: "Ema Watson",
-    avatar_url:
-      "https://images.unsplash.com/photo-1503104834685-7205e8607eb9?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8bW9kZWx8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80",
-    subtitle: "I am good, how are you?",
-  },
-  {
-    name: "Chris Jackson",
-    avatar_url:
-      "https://images.pexels.com/photos/3748221/pexels-photo-3748221.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    subtitle:
-      " If you use this site regularly and would like to help keep the site",
-  },
-  {
-    name: "Jenifar Lawrence",
-    avatar_url:
-      "https://m.media-amazon.com/images/M/MV5BOTU3NDE5MDQ4MV5BMl5BanBnXkFtZTgwMzE5ODQ3MDI@._V1_.jpg",
-    subtitle: "Why do we use it?",
-  },
-  {
-    name: "Tom Holland",
-    avatar_url:
-      "https://static.toiimg.com/thumb.cms?msid=80482429&height=600&width=600",
-    subtitle:
-      " If you use this site regularly and would like to help keep the site",
-  },
-];
+import { baseStyle, flex } from "../../Utils/HelperStyle";
+import moment from "moment-timezone";
+import { commonStrings } from "../../Utils/Strings";
 
 const AllUser = () => {
   const { userData } = useSelector((state) => state.User);
-
-  const [search, setsearch] = useState("");
   const [allUser, setallUser] = useState([]);
-  const [allUserBackup, setallUserBackup] = useState([]);
 
   useEffect(() => {
     getAllUser();
   }, []);
+  useEffect(() => {
+    getChatlist();
+  }, []);
 
+  // //getchatList
+  const getChatlist = async (userList) => {
+    database()
+      .ref("/chatlist/" + userData?.id)
+      .on("value", (snapshot) => {
+        if (snapshot.val() != null) {
+          const chatlist = Object.values(snapshot.val());
+
+          // setchatList(dataArray);
+          // setLoader(false);
+          const chatlistMap = new Map(
+            chatlist.map((item) => [item.emailId, item])
+          );
+          if (userList) {
+            var updateData = userList.map((user) => {
+              const chatUser = chatlistMap.get(user.emailId);
+              if (chatUser) {
+                return {
+                  ...user,
+                  lastMsg: chatUser.lastMsg,
+                  sendTime: chatUser.sendTime,
+                };
+              }
+              return user;
+            });
+
+            updateData.sort(
+              (a, b) => new Date(b.sendTime) - new Date(a.sendTime)
+            );
+            setallUser(updateData);
+          }
+        } else {
+          setallUser(userList);
+        }
+      });
+  };
+
+  // getAllUser
   const getAllUser = () => {
     database()
       .ref("users/")
       .once("value")
       .then((snapshot) => {
-        console.error("all User data: ", Object.values(snapshot.val()));
-        setallUser(
-          Object.values(snapshot.val()).filter((it) => it.id != userData.id)
+        let userList = Object.values(snapshot.val()).filter(
+          (it) => it.id != userData.id
         );
-        setallUserBackup(
-          Object.values(snapshot.val()).filter((it) => it.id != userData.id)
-        );
+        if (userList.length > 0) {
+          getChatlist(userList);
+        }
       });
   };
 
-  const searchuser = (val) => {
-    setsearch(val);
-    setallUser(allUserBackup.filter((it) => it.name.match(val)));
-  };
-
+  // createChatList
   const createChatList = (data) => {
     database()
       .ref("/chatlist/" + userData.id + "/" + data.id)
       .once("value")
       .then((snapshot) => {
-        console.log("User data: ", snapshot.val());
-
         if (snapshot.val() == null) {
           let roomId = uuid.v4();
           let myData = {
@@ -154,9 +119,36 @@ const AllUser = () => {
       });
   };
 
+  //changeTimeFormat
+  const changeTimeFormat = (val) => {
+    const dateTimeString = val;
+    const timeOnly = moment(dateTimeString)
+      .tz("Asia/Kolkata")
+      .format("hh:mm:ss A");
+    return timeOnly;
+  };
+
+  //EmptyListMessage
+  const EmptyListMessage = () => {
+    return (
+      <Text
+        style={[
+          baseStyle.txtStylePoppinsSemiBold(12, COLORS.black, 14),
+          baseStyle.textAlignCenter,
+          baseStyle.padding10px,
+          baseStyle.justifyContentCenter,
+          baseStyle.alignItemsCenter,
+          baseStyle.displayFlex,
+        ]}
+      >
+        {commonStrings.noRecordFound}
+      </Text>
+    );
+  };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
-      style={[baseStyle.borderBottom1px]}
+      style={[baseStyle.shadowBlack, styles.cardContainer]}
       onPress={() => createChatList(item)}
     >
       <View style={[styles.allUsersContainer]}>
@@ -167,9 +159,33 @@ const AllUser = () => {
             style={styles.imageContainer}
           />
         </View>
-        <View>
-          <Text> {item.name}</Text>
-          <Text> {item.about}</Text>
+        <View style={[baseStyle.marginLeft2px, baseStyle.flex1]}>
+          <Text
+            style={[baseStyle.txtStylePoppinsSemiBold(15, COLORS.black, 18)]}
+          >
+            {" "}
+            Name: {item.name}
+          </Text>
+          {item.lastMsg && (
+            <View
+              style={[
+                baseStyle.flexDirectionRow,
+                baseStyle.justifyContentSB,
+                ,
+              ]}
+            >
+              <Text
+                style={[baseStyle.txtStylePoppinsRegular(15, COLORS.black, 20)]}
+              >
+                {commonStrings.lsgMsg} :{item.lastMsg}
+              </Text>
+              <Text
+                style={[baseStyle.txtStylePoppinsBold(15, COLORS.green, 20)]}
+              >
+                {changeTimeFormat(item.sendTime)}
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     </TouchableOpacity>
@@ -184,6 +200,7 @@ const AllUser = () => {
         keyExtractor={(item, index) => index.toString()}
         data={allUser}
         renderItem={renderItem}
+        ListEmptyComponent={EmptyListMessage}
       />
     </View>
   );
@@ -202,6 +219,13 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.Regular,
     color: COLORS.black,
     opacity: 0.7,
+  },
+  cardContainer: {
+    padding: 10,
+    backgroundColor: COLORS.white,
+    marginHorizontal: 10,
+    marginVertical: 5,
+    borderRadius: 5,
   },
 
   listStyle: { paddingVertical: 7, marginVertical: 2 },
