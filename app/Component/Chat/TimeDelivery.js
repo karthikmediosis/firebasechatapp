@@ -24,7 +24,7 @@ const TimeDelivery = (props) => {
           color: sender ? COLORS.white : COLORS.black,
         }}
       >
-        {moment(item.send_time).format("LLL")}
+        {moment(item.sendTime).format("LLL")}
       </Text>
 
       <Ionicons

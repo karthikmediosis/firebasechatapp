@@ -36,6 +36,7 @@ function Register() {
       emailId: email,
       about: about,
       name: name,
+      sendTime: new Date(),
       img: "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-High-Quality-Image.png",
     };
     database()

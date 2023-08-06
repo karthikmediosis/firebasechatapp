@@ -173,10 +173,13 @@ const AllUser = () => {
             updateData.sort(
               (a, b) => new Date(b.sendTime) - new Date(a.sendTime)
             );
+            console.log("updateData", JSON.stringify(updateData));
+
             setallUser(updateData);
             setLoader(false);
           }
         } else {
+          console.log("userList", JSON.stringify(userList));
           setallUser(userList);
           setLoader(false);
         }
@@ -297,7 +300,10 @@ const AllUser = () => {
               <Text
                 style={[baseStyle.txtStylePoppinsRegular(15, COLORS.black, 20)]}
               >
-                {commonStrings.lsgMsg} :{item.lastMsg}
+                {commonStrings.lsgMsg} :
+                {item.lastMsg.length > 5
+                  ? item.lastMsg.slice(0, 10) + "..."
+                  : item.lastMsg}
               </Text>
               <Text
                 style={[baseStyle.txtStylePoppinsBold(15, COLORS.green, 20)]}
