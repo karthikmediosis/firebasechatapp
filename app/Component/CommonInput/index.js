@@ -9,7 +9,7 @@ const CommonInput = ({
   placeholder,
   onChangeText,
   value,
-  keyboardType = "text",
+  keyboardType = "default",
   iconName = "mail",
 }) => {
   return (
